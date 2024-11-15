@@ -1,0 +1,16 @@
+# This is a project definition file,
+# a required component if you intend to use Snowflake CLI in a project directory such as this template.
+
+definition_version: 1
+native_app:
+  name: my_streamlit_python_app
+  source_stage: app_src.stage
+  application:
+    warehouse: mywarehouse
+  artifacts:
+    - src: app/*
+      dest: ./
+    - src: src/module-add/src/main/python/add.py
+      dest: module-add/add.py
+    - src: src/module-ui/src/*
+      dest: streamlit/

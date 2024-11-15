@@ -1,0 +1,15 @@
+[tool.mypy]
+check_untyped_defs = true
+mypy_path = ["src"]
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+[tool.ruff]
+# Ruff supports a top-level `src` option in lieu of isort's `src_paths` setting.
+# All paths are relative to the project root, which is the directory containing the pyproject.toml.
+target-version = "py38"
+src = ["src", "tests"]
+line-length = 88
+fix = true
+[tool.ruff.lint]
+select = ["I"]  # select isort
