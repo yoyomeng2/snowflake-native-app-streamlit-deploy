@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+echo "Checking for uncommitted changes..."
+
+if [[ -n "$(git status --porcelain)" ]]; then
+  echo "Uncommitted changes found:"
+  git status --porcelain
+  git diff HEAD --compact-summary
+  echo "***TIP: if you want to ignore these, add them to .gitignore"
+  exit 1
+fi

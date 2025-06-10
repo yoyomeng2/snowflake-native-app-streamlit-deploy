@@ -4,7 +4,7 @@ definition_version: 2
 entities:
   pkg:
     type: application package
-    identifier: <% fn.concat_ids('my_streamlit_python_app_pkg', ctx.env.suffix) %>
+    identifier: <% fn.concat_ids('my_app_streamlit_python_pkg', ctx.env.suffix) %>
     artifacts:
       - src: app/*
         dest: ./
@@ -12,15 +12,13 @@ entities:
         dest: module-add/add.py
       - src: src/module-ui/src/*
         dest: streamlit/
-    
-    manifest: app/manifest.yml
-    
+
 
   app:
     type: application
     from:
       target: pkg
-    identifier: <% fn.concat_ids('my_streamlit_python_app', ctx.env.suffix) %>
+    identifier: <% fn.concat_ids('my_app_streamlit_python', ctx.env.suffix) %>
 
 env:
   suffix: <% fn.concat_ids('_', fn.sanitize_id(fn.get_username('unknown_user')) | lower) %>
@@ -32,4 +30,3 @@ env:
 #    post_deploy:
 #      - sql_script: scripts/any-provider-setup.sql
 #      - sql_script: scripts/shared-content.sql
-

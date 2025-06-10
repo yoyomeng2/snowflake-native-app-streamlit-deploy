@@ -33,7 +33,6 @@ repos:
       - id: ruff-format
         args:
           - --config=pyproject.toml
-          - --fix
 
   # Lint github actions workflow files
   - repo: https://github.com/rhysd/actionlint
@@ -41,12 +40,10 @@ repos:
     hooks:
       - id: actionlint
 
-  # Use local mypy script to check types, using the uv venv, which pre-commit/mirrors-mypy cannot do
   - repo: local
     hooks:
       - id: mypy
         name: mypy
-        language: script
-        entry: bin/run-mypy
+        language: system
+        entry: uv run mypy
         pass_filenames: false
-  

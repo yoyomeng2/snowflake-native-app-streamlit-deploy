@@ -1,0 +1,38 @@
+name: Deploy via Snowflake CLI
+# This workflow deploys to a sandbox environment.
+# It is triggered by pushes to branches that start with `feature/` or `fix/`,
+# or can be manually triggered via the workflow dispatch event.
+
+on:
+  push:
+    branches:
+      - feature/*
+      - fix/*
+
+  workflow_dispatch:
+
+jobs:
+  checks:
+    name: Checks
+    uses: ./.github/workflows/checks.yml
+
+  deploy:
+    # trigger on pushes to feature or fix branches
+    name: Deploy to Sandbox
+    if: ${{ startsWith(github.ref, 'refs/heads/feature/') || startsWith(github.ref, 'refs/heads/fix/') }}
+    needs: checks
+    runs-on: ubuntu-latest
+    environment: sandbox
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Create Sandbox Version"
+        uses: ./.github/actions/create-version
+        with:
+          environment: sandbox
+          app_pkg_suffix: _sandbox
+          PRIVATE_KEY_FILE_CONTENT: ${{ secrets.PRIVATE_KEY_FILE_CONTENT }}
+          PRIVATE_KEY_PASSPHRASE: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
+          SNOWFLAKE_CLI_VERSION: ${{ vars.SNOWFLAKE_CLI_VERSION }}
+          CONNECTION_NAME: myconnection

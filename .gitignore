@@ -1,10 +1,12 @@
 .packages/
 .venv/
 app.zip
-__pycache__
 venv
 __pycache__/
 .mypy_cache/
 .pytest_cache/
+.ruff_cache/
+*.egg-info/
 rsa_key*
 output/
+snowflake.local.yml

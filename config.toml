@@ -1,6 +1,6 @@
-default_connection_name = "my-snowflake-connection"
+default_connection_name = "myconnection"
 
-[connections.my-snowflake-connection]
+[connections.myconnection]
 account = "myaccount"
 user = "myuser"
 region = "us-east-1"

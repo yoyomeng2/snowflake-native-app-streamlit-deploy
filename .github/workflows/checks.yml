@@ -1,0 +1,55 @@
+name: Checks
+# This workflow runs pre-commit checks and tests on the codebase.
+# Additional linting or security checks can be added as needed.
+
+on:
+  workflow_call:
+    inputs:
+      python_version:
+        required: false
+        default: "3.11"
+        type: string
+        description: "Python version to use (default: 3.11)"
+
+jobs:
+  checks:
+    name: Pre-commit Checks and Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Common Setup
+        uses: ./.github/actions/common-setup
+        with:
+          python_version: ${{ inputs.python_version }}
+
+      - name: Cache Pre-commit Environments
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ hashFiles('.pre-commit-config.yml') }}
+          restore-keys: |
+            pre-commit-
+
+      - name: Cache .mypy_cache
+        uses: actions/cache@v4
+        with:
+          path: .mypy_cache
+          key: mypy-${{ hashFiles('**/*.py', '.pre-commit-cache.yaml','pyproject.toml') }}
+          restore-keys: |
+            mypy-
+
+      - name: Run pre-commit checks
+        shell: bash
+        run: |
+          uv run pre-commit run --all-files
+
+      - name: Check for Uncommitted Changes
+        shell: bash
+        run: bin/check-uncommitted-changes
+
+      - name: Pytest Native App
+        shell: bash
+        run: uv run pytest nativeapp

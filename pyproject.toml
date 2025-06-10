@@ -1,15 +1,94 @@
-[tool.mypy]
-check_untyped_defs = true
-mypy_path = ["src"]
-[tool.pytest.ini_options]
-pythonpath = ["src"]
-testpaths = ["tests"]
+[project]
+name = "example_project"
+version = "0.1.0"
+description = "An example Python project"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = [
+    "jinja2==3.1.4",
+    "pandas>=2.1.3",
+    "pandas-stubs",
+    "pre-commit==3.5.0",
+    "pyarrow<19.0.0",
+    "requests~=2.32.3",
+    "snowflake-snowpark-python==1.28.0",
+    "streamlit==1.35.0",
+    "toml==0.10.2",
+]
+
+[project.optional-dependencies]
+
+dev = [
+    "mypy",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "ruff",
+    "shandy-sqlfmt[jinjafmt]",
+    "snowflake-snowpark-python[localtest]",
+    "types-toml",
+]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.16.0",
+    "pandas-stubs>=2.2.3.250527",
+    "pytest>=8.3.5",
+    "ruff>=0.11.13",
+    "types-toml>=0.10.8.20240310",
+]
+
 [tool.ruff]
-# Ruff supports a top-level `src` option in lieu of isort's `src_paths` setting.
-# All paths are relative to the project root, which is the directory containing the pyproject.toml.
-target-version = "py38"
-src = ["src", "tests"]
-line-length = 88
 fix = true
+line-length = 100
+# Target Python version
+target-version = "py311"
+
 [tool.ruff.lint]
-select = ["I"]  # select isort
+# Enable the pycodestyle (`E`), Pyflakes (`F`), and import sorting (`I`) rules by default
+select = ["E", "F", "I"]
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+# Indent with 4 spaces
+indent-style = "space"
+line-ending = "auto"
+
+[tool.ruff.lint.isort]
+known-first-party = ["ui"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.pytest.ini_options]
+pythonpath = [
+    "nativeapp/src/module-add/src/main/python",
+    "nativeapp/src/module-ui/src",
+]
+filterwarnings = [  # filtering warnigns to avoid noise in test output
+    "ignore::DeprecationWarning:google._upb._message:",
+    "ignore::DeprecationWarning:pkg_resources:",
+    "ignore::UserWarning:snowflake.connector.options:",
+    "ignore::UserWarning:snowflake.snowpark.session:",
+    "ignore::DeprecationWarning:importlib._bootstrap:",
+]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "nativeapp"
+files = ["nativeapp/src"]
+
+disallow_untyped_defs = false  # left false because of Snowflake's lack of type hints
+disallow_incomplete_defs = false  # left false because of Snowflake's lack of type hints
+disallow_untyped_decorators = true
+explicit_package_bases = true
+no_implicit_optional = true
+strict_optional = true
+warn_return_any = false  # left false because of Snowflake's lack of type hints
+warn_unused_configs = true

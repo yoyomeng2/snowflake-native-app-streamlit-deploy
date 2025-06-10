@@ -1,8 +1,0 @@
-{
-    "python.testing.pytestArgs": [
-        "src/module-add/src/main/python",
-        "src/module-ui/src",
-    ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
-}

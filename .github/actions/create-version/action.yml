@@ -1,0 +1,66 @@
+name: Create Version
+description: Create a new version of the application
+inputs:
+  environment:
+    description: "The environment to deploy to"
+    required: true
+  app_pkg_suffix:
+    description: "The suffix to append to the application package name"
+    required: true
+  PRIVATE_KEY_FILE_CONTENT:
+    description: "The private key file content"
+    required: true
+  PRIVATE_KEY_PASSPHRASE:
+    description: "The private key passphrase"
+    required: true
+  SNOWFLAKE_CLI_VERSION:
+    description: "The version of the Snowflake CLI to use"
+    required: true
+  DISTRIBUTION:
+    description: "The distribution of the application"
+    required: true
+    default: "internal"
+  CONNECTION_NAME:
+    description: "The name of the Snowflake connection to use"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Checkout"
+      uses: actions/checkout@v4
+
+    - name: "Create config"
+      shell: bash
+      run: |
+        mkdir -p ~/.snowflake
+        cp config.toml ~/.snowflake/config.toml
+        chmod 0600 ~/.snowflake/config.toml
+
+    - name: "Write private key"
+      shell: bash
+      env:
+        PRIVATE_KEY_FILE_CONTENT: ${{ inputs.PRIVATE_KEY_FILE_CONTENT }}
+      run: |
+        printf "%s" "$PRIVATE_KEY_FILE_CONTENT" > rsa_key.p8
+        chmod 0600 rsa_key.p8
+
+    - uses: snowflakedb/snowflake-cli-action@v1.5
+      with:
+        cli-version: ${{ inputs.SNOWFLAKE_CLI_VERSION }}
+
+    - name: Set version value
+      id: set-version
+      shell: bash
+      run: |
+        ver=$(cat app/version.txt)
+        echo "APP_VERSION=$ver" >> $GITHUB_OUTPUT
+
+    - name: "Deploy Native App Version"
+      env:
+        PRIVATE_KEY_PASSPHRASE: ${{ inputs.PRIVATE_KEY_PASSPHRASE }}
+        APP_VERSION: ${{ steps.set-version.outputs.APP_VERSION }}
+      shell: bash
+      run: |
+        snow connection test --connection ${{ inputs.CONNECTION_NAME }}
+        snow app version create ${{ env.APP_VERSION }} --connection ${{ inputs.CONNECTION_NAME }} --env suffix="${{ inputs.app_pkg_suffix }}" --env distribution="${{ inputs.DISTRIBUTION }}" --interactive --force
