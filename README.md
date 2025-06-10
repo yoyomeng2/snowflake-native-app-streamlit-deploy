@@ -201,9 +201,7 @@ It contains a fully functional Streamlit application that is deployed as a Snowf
 
 Congratulations! You have successfully deployed a Native App to Snowflake app using GitHub Actions.
 
-For reference, the completed project is available here:
-
-https://github.com/yoyomeng2/snowflake-native-app-streamlit-deploy
+Proceed to the XXX repo for a tutorial on TBD.
 
 ## License
 
