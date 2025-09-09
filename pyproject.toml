@@ -13,8 +13,7 @@ dependencies = [
     "pre-commit==4.3.0",
     "pyarrow<22.0.0",
     "requests~=2.32.3",
-    "streamlit==1.49.1",
-    "snowflake-snowpark-python==1.37.0",
+    "snowflake-snowpark-python==1.38.0",
     "streamlit==1.49.1",
     "toml==0.10.2",
 ]
