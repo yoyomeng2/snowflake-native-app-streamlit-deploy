@@ -11,7 +11,7 @@ dependencies = [
     "pandas>=2.1.3",
     "pandas-stubs",
     "pre-commit==4.3.0",
-    "pyarrow<22.0.0",
+    "pyarrow<23.0.0",
     "requests~=2.32.3",
     "snowflake-snowpark-python==1.41.0",
     "streamlit==1.50.0",
